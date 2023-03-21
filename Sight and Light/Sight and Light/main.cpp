@@ -32,13 +32,12 @@ int main()
 		setfillcolor(WHITE);
 		solidrectangle(0, 0, WIDTH, HEIGHT);
 		//ª≠’œ∞≠
-		m.draw();
+		m.draw(msg);
 		//ª≠π‚‘¥
 		setfillcolor(BLACK);
 		solidcircle(msg.x, msg.y, 8);
 
 		EndBatchDraw();
-
 	}
 	system("pause");
 	return 0;
