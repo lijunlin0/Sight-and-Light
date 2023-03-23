@@ -13,12 +13,13 @@ static const int HEIGHT = 960;
 
 int main()
 {
-	initgraph(WIDTH, HEIGHT);
+	initgraph(WIDTH, HEIGHT,SHOWCONSOLE);
 	map m;
 	ExMessage msg;//创建消息变量
 	while (true)
 	{
 		getmessage(&msg, EX_MOUSE);
+		m.set_mouse_point(msg);
 		long long current = time::current_time();
 		if (current - time::update_ms < time::frame_ms)
 		{

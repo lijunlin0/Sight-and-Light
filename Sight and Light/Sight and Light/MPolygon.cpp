@@ -1,4 +1,5 @@
 #include"MPolygon.h"
+#include<math.h>
 
 MPolygon::MPolygon(POINT* p, int num)
 {
@@ -25,28 +26,25 @@ void MPolygon::init_point()
 std::vector<std::pair<POINT, POINT>> MPolygon::get_segments()
 {
 	std::vector<std::pair<POINT, POINT>> v;
+	std::pair<POINT, POINT> p;
 	for (int i = 0; i < m_num; i++)
 	{
 		if ((i + 1 != m_num))
 		{
-			v[i].first = m_p[i];
-			v[i].second = m_p[i + 1];
+			p.first= m_p[i];
+			p.second=m_p[i + 1];
+			v.push_back(p);
 		}
 		else
 		{
-			v[i].first = m_p[i];
-			v[i].second = m_p[0];
+			p.first = m_p[i];
+			p.second = m_p[0];
+			v.push_back(p);
 		}
 	}
 	return v;
 }
 
-//得到交点
-POINT MPolygon::get_intersection_point(std::pair<POINT, POINT> segment)
-{
-	POINT i;
-	return i;
-}
 
 /*
 1--我们需要找到视线（也可以是光线，我们用视线来统一代替）和这些线段之间最近的交点。任何一条线都可以这样来表示：Point + Direction * T
