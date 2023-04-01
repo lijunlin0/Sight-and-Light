@@ -9,7 +9,6 @@ MPolygon::MPolygon(POINT* p, int num)
 }
 void MPolygon::draw()
 {
-	setfillcolor(BLUE);
 	fillpolygon(m_p, m_num);
 }
 

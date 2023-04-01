@@ -13,8 +13,11 @@ private:
 	std::vector<std::pair<POINT, POINT>> mouse_segments;
 	//鼠标位置
 	POINT mouse_point;
+	std::vector<POINT> polygon_points;
 public:
 	map();
+	//计算线的长度
+	double segment_length(std::pair<POINT, POINT> segment);
 	//得到交点
 	POINT get_intersection_point(std::pair<POINT, POINT> mouse_segment, std::pair<POINT, POINT> segment);
 	//画图形
@@ -22,5 +25,5 @@ public:
 	//设置鼠标位置
 	void set_mouse_point(ExMessage msg) { mouse_point.x = msg.x; mouse_point.y = msg.y; };
 	//初始化光源到顶点的边
-	void init_mouse_segments();
+	void update_mouse_segments();
 };
