@@ -51,18 +51,38 @@ map::map()
 	MPolygon mp11(p11, 5);
 	polygons.push_back(mp11);
 
-	auto comp = [this](const POINT& angle1, const POINT& angle2) -> bool
-	{
-		int dx = mouse_point.x - angle1.x;
-		int dy = mouse_point.y - angle1.y;
-		double angle_1 = atan2(dy, dx);
 
-		dx = mouse_point.x - angle2.x;
-		dy = mouse_point.y - angle2.y;
-		double angle_2 = atan2(dy, dx);
+	POINT* p12 = new POINT[4]{ {0, 0}, {WIDTH, 0},{WIDTH,HEIGHT},{0,HEIGHT } };
+	MPolygon mp12(p12, 4,true);
+	polygons.push_back(mp12);
+}
+
+
+void map::update_mouse_segments()
+{	
+	auto get_point = [](const POINT& point, double angle) -> POINT
+	{
+		POINT E;
+		E.x = point.x + 10000;
+		E.y = point.y + tan(angle) * 10000;
+		return E;
+	};
+
+	auto get_angle = [](const POINT& point1, const POINT& point2) -> double
+	{
+		double dx = point2.x - point1.x;
+		double dy = point2.y - point1.y;
+		return atan2(dy, dx);
+	};
+
+	auto comp = [&](const POINT& point1, const POINT& point2) -> bool
+	{
+		double angle_1 = get_angle(mouse_point, point1);
+		double angle_2 = get_angle(mouse_point, point2);
 		return angle_1 < angle_2;
 	};
 
+	polygon_points.clear();
 	//遍历每个图形
 	for (int i = 0; i < polygons.size(); i++)
 	{
@@ -70,21 +90,27 @@ map::map()
 		for (int j = 0; j < polygons[i].get_point().size(); j++)
 		{
 			polygon_points.push_back(polygons[i].get_point()[j]);
-			sort(polygon_points.begin(), polygon_points.end(),comp);
 		}
 	}
-}
-
-
-void map::update_mouse_segments()
-{	
+	sort(polygon_points.begin(), polygon_points.end(), comp);
 	mouse_segments.clear();
 	std::pair<POINT, POINT> p;
 
 	for (int i = 0; i<polygon_points.size(); i++)
 	{
+		double angle = get_angle(mouse_point, polygon_points[i]);
+		POINT E = get_point(mouse_point, angle-1);
+		p.first = mouse_point;
+		p.second = E;
+		mouse_segments.push_back(p);
+
 		p.first = mouse_point;
 		p.second = polygon_points[i];
+		mouse_segments.push_back(p);
+
+		E = get_point(mouse_point, angle + 1);
+		p.first = mouse_point;
+		p.second = E;
 		mouse_segments.push_back(p);
 	}
 }
@@ -171,12 +197,13 @@ void map::draw(ExMessage msg)
 	POINT* p = new POINT[size];
 	for (int i = 0; i <size;i++)
 	{
-		p[i] = mouse_segments[i].second;
+		p[i] = mouse_segments[i].second; 
 	}
 	MPolygon polygon(p, size);
 
 	setfillcolor(GREEN);
 	polygon.draw();
+	//polygon.draw();
 	/*line(msg.x, msg.y, 50, 200);	line(msg.x, msg.y, 200, 200);	line(msg.x, msg.y, 400, 50); line(msg.x, msg.y, 200, 50); 
 	line(msg.x, msg.y, 100, 300);	line(msg.x, msg.y, 400, 400);	line(msg.x, msg.y, 700, 150);
 	line(msg.x, msg.y, 800, 500);	line(msg.x, msg.y, 1000, 100);	line(msg.x, msg.y, 1200, 100);	line(msg.x, msg.y, 1000, 400);	line(msg.x, msg.y, 1350, 400);	line(msg.x, msg.y, 1100, 800); line(msg.x, msg.y, 900, 800); line(msg.x, msg.y, 1100, 500);

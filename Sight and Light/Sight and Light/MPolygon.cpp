@@ -1,14 +1,19 @@
 #include"MPolygon.h"
 #include<math.h>
 
-MPolygon::MPolygon(POINT* p, int num)
+MPolygon::MPolygon(POINT* p, int num,bool is_border)
 {
+	m_border = is_border;
 	m_p = p;
 	m_num = num;
 	init_point();
 }
 void MPolygon::draw()
 {
+	if (m_border)
+	{
+		return;
+	}
 	fillpolygon(m_p, m_num);
 }
 

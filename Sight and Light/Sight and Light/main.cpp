@@ -7,13 +7,10 @@
 using namespace std;
 
 long long time::update_ms = 0;
-//窗口宽高
-static const int WIDTH = 1760;
-static const int HEIGHT = 960;
 
 int main()
 {
-	initgraph(WIDTH, HEIGHT,SHOWCONSOLE);
+	initgraph(map::WIDTH, map::HEIGHT,SHOWCONSOLE);
 	map m;
 	ExMessage msg;//创建消息变量
 	while (true)
@@ -31,7 +28,7 @@ int main()
 
 		//清屏
 		setfillcolor(WHITE);
-		solidrectangle(0, 0, WIDTH, HEIGHT);
+		solidrectangle(0, 0, map::WIDTH, map::HEIGHT);
 		//画障碍
 		m.draw(msg);
 		//画光源

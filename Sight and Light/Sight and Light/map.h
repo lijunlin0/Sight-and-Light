@@ -6,6 +6,11 @@
 
 class map
 {
+public:
+	//´°¿Ú¿í¸ß
+	static const int WIDTH = 1760;
+	static const int HEIGHT = 960;
+
 private:
 	//Í¼ÐÎ
 	std::vector<MPolygon> polygons;
