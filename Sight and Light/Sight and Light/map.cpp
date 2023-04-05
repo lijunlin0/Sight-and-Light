@@ -62,17 +62,25 @@ void map::update_mouse_segments()
 {	
 	auto get_point = [](const POINT& point, double angle) -> POINT
 	{
+		if (angle < 0)
+		{
+			angle += 360;
+		}
 		POINT E;
-		E.x = point.x + 10000;
-		E.y = point.y + tan(angle) * 10000;
+		int factor = angle >= 90 && angle < 270 ? -1 : 1;
+
+		E.x = point.x + factor*1000;
+		E.y = point.y + tan(angle) * 1000;
 		return E;
 	};
-
+	
 	auto get_angle = [](const POINT& point1, const POINT& point2) -> double
 	{
 		double dx = point2.x - point1.x;
 		double dy = point2.y - point1.y;
-		return atan2(dy, dx);
+		double radian= atan2(dy, dx);
+		return radian / 3.1415926 * 180;
+		
 	};
 
 	auto comp = [&](const POINT& point1, const POINT& point2) -> bool
@@ -203,7 +211,6 @@ void map::draw(ExMessage msg)
 
 	setfillcolor(GREEN);
 	polygon.draw();
-	//polygon.draw();
 	/*line(msg.x, msg.y, 50, 200);	line(msg.x, msg.y, 200, 200);	line(msg.x, msg.y, 400, 50); line(msg.x, msg.y, 200, 50); 
 	line(msg.x, msg.y, 100, 300);	line(msg.x, msg.y, 400, 400);	line(msg.x, msg.y, 700, 150);
 	line(msg.x, msg.y, 800, 500);	line(msg.x, msg.y, 1000, 100);	line(msg.x, msg.y, 1200, 100);	line(msg.x, msg.y, 1000, 400);	line(msg.x, msg.y, 1350, 400);	line(msg.x, msg.y, 1100, 800); line(msg.x, msg.y, 900, 800); line(msg.x, msg.y, 1100, 500);
