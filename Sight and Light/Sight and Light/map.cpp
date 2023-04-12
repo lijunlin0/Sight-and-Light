@@ -6,60 +6,62 @@
 using namespace std;
 map::map()
 {
-	//四边形
-	POINT* p1 =new POINT[4] { {50, 200}, {200, 200},{400,50},{200, 50} };
+	long half_width = WIDTH / 2;
+	long half_height = HEIGHT / 2;
+
+	POINT* p1 = new POINT[4]{ {-830,280},{-680,280},{-480,430},{-680,430} };
 	MPolygon mp1(p1, 4);
 	polygons.push_back(mp1);
 
-	POINT* p2 = new POINT[3]{ {100, 300}, {400, 400},{700,150} };
+	POINT* p2 = new POINT[3]{ {-780,180},{-480,80},{-180,330} };
 	MPolygon mp2(p2, 3);
 	polygons.push_back(mp2);
 
-	POINT* p3 = new POINT[8]{ {800, 500}, {1000, 100},{1200,100},{1000,400},{1350,400},{1100,800},{900,800},{1100,500} };
+	POINT* p3 = new POINT[8]{ {-80,-20},{120,380},{320,380},{120,80},{470,80},{220,-320},{20,-320},{220,-20} };
 	MPolygon mp3(p3, 8);
 	polygons.push_back(mp3);
 
-	POINT* p4 = new POINT[8]{ {100, 550}, {200, 450},{300,450},{350,550},{400,450},{500,450},{600,550},{350,800} };
+	POINT* p4 = new POINT[8]{ {-780,-70},{-680,30},{-580,30},{-530,-70},{-480,30},{-380,30},{-280,-70},{-530,-320} };
 	MPolygon mp4(p4, 8);
 	polygons.push_back(mp4);
 
-	POINT* p5 = new POINT[3]{ {675, 650}, {695, 400},{715,700} };
+	POINT* p5 = new POINT[3]{ {-205,-170},{-185,80},{-165,-220} };
 	MPolygon mp5(p5, 3);
 	polygons.push_back(mp5);
 
-	POINT* p6 = new POINT[11]{ {1400, 700}, {1500, 650},{1450,650},{1550, 600}, {1650, 650},{1600,650},{1700, 700}, {1575, 700},{1575,800},{1525, 800}, {1525, 700} };
+	POINT* p6 = new POINT[11]{ {520,-220},{620,-170},{570,-170},{670,-120},{770,-170},{720,-170},{820,-220},{695,-220},{695,-320},{645,-320},{645,-220} };
 	MPolygon mp6(p6, 11);
 	polygons.push_back(mp6);
 
-	POINT* p7 = new POINT[4]{ {1350, 125}, {1750, 250},{1475,600},{1600,285} };
+	POINT* p7 = new POINT[4]{ {470,355},{870,230},{595,-120},{720,195} };
 	MPolygon mp7(p7, 4);
 	polygons.push_back(mp7);
 
-	POINT* p8 = new POINT[4]{ {400, 850}, {475, 775},{675,850},{600,925} };
+	POINT* p8 = new POINT[4]{ {-480,-370},{-405,-295},{-205,-370},{-280,-445} };
 	MPolygon mp8(p8, 4);
 	polygons.push_back(mp8);
 
-	POINT* p9 = new POINT[3]{ {725, 300}, {900, 10},{925,150} };
+	POINT* p9 = new POINT[3]{ {-155,180},{20,470},{45,330} };
 	MPolygon mp9(p9, 3);
 	polygons.push_back(mp9);
 
-	POINT* p10 = new POINT[9]{ {1150, 950}, {1225, 825},{1250,875},{1285,815},{1300, 865}, {1345, 780},{1375,850},{1445,775},{1425,885} };
+	POINT* p10 = new POINT[9]{ {270,-470},{345,-345},{370,-395},{405,-335},{420,-385},{465,-300},{495,-370},{565,-295},{545,-405} };
 	MPolygon mp10(p10, 9);
 	polygons.push_back(mp10);
 
-	POINT* p11 = new POINT[5]{ {1100, 350}, {1275, 225},{1475,265},{1400,425},{1295,315} };
+	POINT* p11 = new POINT[5]{ {220,130},{395,255},{595,215},{520,55},{415,165} };
 	MPolygon mp11(p11, 5);
 	polygons.push_back(mp11);
 
+	POINT* p12 = new POINT[4]{ {-half_width,half_height} ,{half_width ,half_height}, {half_width, -half_height}, { -half_width,-half_height} };
 
-	POINT* p12 = new POINT[4]{ {0, 0}, {WIDTH, 0},{WIDTH,HEIGHT},{0,HEIGHT } };
 	MPolygon mp12(p12, 4,true);
 	polygons.push_back(mp12);
 }
 
-
 void map::update_mouse_segments()
 {	
+	//传入起点和角度返回终点
 	auto get_point = [](const POINT& point, double angle) -> POINT
 	{
 		if (angle < 0)
@@ -69,11 +71,13 @@ void map::update_mouse_segments()
 		POINT E;
 		int factor = angle >= 90 && angle < 270 ? -1 : 1;
 
-		E.x = point.x + factor*1000;
-		E.y = point.y + tan(angle) * 1000;
+		double radian = angle / 180 * 3.1415926;
+		E.x = point.x + factor*2000;
+		E.y = point.y + tan(radian) *factor* 2000;
 		return E;
 	};
 	
+	//传入两个点返回角度
 	auto get_angle = [](const POINT& point1, const POINT& point2) -> double
 	{
 		double dx = point2.x - point1.x;
@@ -101,13 +105,14 @@ void map::update_mouse_segments()
 		}
 	}
 	sort(polygon_points.begin(), polygon_points.end(), comp);
+
 	mouse_segments.clear();
 	std::pair<POINT, POINT> p;
 
 	for (int i = 0; i<polygon_points.size(); i++)
 	{
 		double angle = get_angle(mouse_point, polygon_points[i]);
-		POINT E = get_point(mouse_point, angle-1);
+		POINT E = get_point(mouse_point, angle-0.001);
 		p.first = mouse_point;
 		p.second = E;
 		mouse_segments.push_back(p);
@@ -116,7 +121,7 @@ void map::update_mouse_segments()
 		p.second = polygon_points[i];
 		mouse_segments.push_back(p);
 
-		E = get_point(mouse_point, angle + 1);
+		E = get_point(mouse_point, angle + 0.001);
 		p.first = mouse_point;
 		p.second = E;
 		mouse_segments.push_back(p);
@@ -198,6 +203,7 @@ void map::draw(ExMessage msg)
 			}
 		}
 		mouse_segments[k].second = min_p;
+		setlinecolor(GREEN);
 		line(mouse_segments[k].first.x, mouse_segments[k].first.y, mouse_segments[k].second.x , mouse_segments[k].second.y);
 	}
 	
